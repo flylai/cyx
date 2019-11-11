@@ -96,4 +96,12 @@ class CYXRunnerTest {
         assertEquals(expect, bytes.toString());
     }
 
+    @Test
+    public void testLoopRelated() {
+        String testFile = "LoopRelated";
+        String expect = readFile(outPath + testFile + ".txt");
+        CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
+        assertEquals(expect, bytes.toString());
+    }
+
 }

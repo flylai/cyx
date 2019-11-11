@@ -1,13 +1,15 @@
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
 public class CYXValue implements Comparable<CYXValue> {
+
+    public enum SourceType {RETURN, COMMON} // 用于return语句跳出
 
     public static final CYXValue NULL = new CYXValue(null);
     public static final CYXValue VOID = new CYXValue();
 
     private Object value;
+
+    private SourceType sourceType = SourceType.COMMON;
 
     private CYXValue() {
         value = new Object();
@@ -148,5 +150,13 @@ public class CYXValue implements Comparable<CYXValue> {
         if (this.isList())
             return this.toList().size() > 0;
         return false;
+    }
+
+    public SourceType getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType;
     }
 }

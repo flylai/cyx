@@ -2,6 +2,7 @@ import AntlrGen.CYXBaseVisitor;
 import AntlrGen.CYXParser;
 import Util.CYXException;
 import Util.Log;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,13 +97,12 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         else
             visit(ctx.varAssignStmt());
         while (true) {
-            if (ctx.cond != null) // for 第二个参数真假情况
-            {
+            if (ctx.cond != null) { // for 第二个参数真假情况
                 if (!visit(ctx.cond).checkTrue())
                     break;
             }
             val = visit(ctx.block());
-            if (val != CYXValue.VOID)
+            if (val.getSourceType() == CYXValue.SourceType.RETURN)
                 break;
             if (ctx.step != null)
                 visit(ctx.step);
@@ -114,7 +114,11 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
 
     @Override
     public CYXValue visitReturnStmt(CYXParser.ReturnStmtContext ctx) {
-        return visit(ctx.expr());
+        CYXValue retval = new CYXValue(null);
+        if (ctx.expr() != null)
+            retval =  visit(ctx.expr());
+        retval.setSourceType(CYXValue.SourceType.RETURN);
+        return retval;
     }
 
     // { stmt* }
@@ -126,12 +130,12 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue retval = CYXValue.VOID;
         // 执行语句
         for (CYXParser.StmtContext stmtCtx : ctx.stmt()) {
-            if (stmtCtx.returnStmt() != null) {
-                retval = visit(stmtCtx.returnStmt().expr());
-                if (retval != CYXValue.VOID)
-                    break;
-            }
-            retval = visit(stmtCtx);
+            if (stmtCtx.returnStmt() != null) { // return语句
+                retval = visit(stmtCtx.returnStmt());
+                retval.setSourceType(CYXValue.SourceType.RETURN);
+                break;
+            } else
+                retval = visit(stmtCtx);
         }
         scope = scope.parent(); // 执行完了，作用域切回去
         return retval;
