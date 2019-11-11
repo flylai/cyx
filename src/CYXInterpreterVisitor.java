@@ -314,7 +314,7 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
                 return visit(ctx.varFunExpr().funCall());
             else throw new CYXException("ERROR:函数 " + ctx.start.getText() + " 未声明");
         }
-        throw new CYXException("?");
+        throw new CYXException("ERROR:未知异常");
     }
 
     @Override
@@ -338,8 +338,6 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         String funName = ctx.ID().getText();
         List tmpArgs = new ArrayList<>();
         int argsSize = ctx.params().param().size();
-        Log.d(funName);
-        Log.d(argsSize + "");
         for (CYXParser.ParamContext context : ctx.params().param()) {
             tmpArgs.add(context.ID().getText());
         }
@@ -485,10 +483,15 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
                 return new CYXValue(left.toDouble() + right.toDouble());
         }
 
-        if (left.isList() && right.isList()) {
+        if (left.isList()) {
             ArrayList tmpList = new ArrayList<>();
-            tmpList.addAll(left.toList());
-            tmpList.addAll(right.toList());
+            if (right.isList()) {
+                tmpList.addAll(left.toList());
+                tmpList.addAll(right.toList());
+            } else {
+                tmpList.addAll(left.toList());
+                tmpList.add(right);
+            }
             return new CYXValue(tmpList);
         }
 
