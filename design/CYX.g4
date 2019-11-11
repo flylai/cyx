@@ -41,7 +41,7 @@ expr:
 
 selfAddSub: ID op = ('++' | '--');
 
-returnStmt: ('return' expr? ';'?);
+returnStmt: ('return' expr? );
 
 funCallStmt: funCall | buildInFunStmt;
 
