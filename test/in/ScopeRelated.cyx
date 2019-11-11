@@ -1,0 +1,45 @@
+int d = 10
+{
+    println(d)
+    int d = 11
+    println(d)
+}
+println(d)
+
+string q = 'str'
+{
+    q = 'strstr'
+    println(q)
+    int q = 112
+    println(q)
+    q++
+    println(q)
+}
+println(q)
+
+int a = 1
+{
+    a++
+    {
+        int a = 2
+        {
+            a++
+        }
+        println(a) // 3
+        a++
+        {
+            println(a) // 4
+            {
+                int a = 9
+                println(a) // 9
+                a--
+                {
+                    a++
+                    println(a) // 9
+                }
+                println(a) // 9
+            }
+        }
+    }
+    println(a) // 2
+}
