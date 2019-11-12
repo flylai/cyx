@@ -116,7 +116,7 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitReturnStmt(CYXParser.ReturnStmtContext ctx) {
         CYXValue retval = new CYXValue(null);
         if (ctx.expr() != null)
-            retval =  visit(ctx.expr());
+            retval = visit(ctx.expr());
         retval.setSourceType(CYXValue.SourceType.RETURN);
         return retval;
     }
@@ -283,7 +283,7 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
         if (left.isInt() && right.isInt())
-            return new CYXValue(left.toInt() | right.toInt());
+            return new CYXValue(left.toInt() & right.toInt());
         throw new CYXException("ERROR:算数与运算仅可用于两个INT间", ctx);
     }
 
@@ -454,13 +454,23 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
 
     @Override
     public CYXValue visitPrintStmt(CYXParser.PrintStmtContext ctx) {
-        System.out.print(visit(ctx.expr()));
+        if (ctx.expr().size() > 0) {
+            for (CYXParser.ExprContext exprContext : ctx.expr()) {
+                System.out.print(visit(exprContext));
+            }
+        }
         return CYXValue.VOID;
     }
 
     @Override
     public CYXValue visitPrintlnStmt(CYXParser.PrintlnStmtContext ctx) {
-        System.out.println(visit(ctx.expr()));
+        if (ctx.expr().size() > 0) {
+            for (CYXParser.ExprContext exprContext : ctx.expr()) {
+                System.out.println(visit(exprContext));
+            }
+        } else {
+            System.out.println();
+        }
         return CYXValue.VOID;
     }
 

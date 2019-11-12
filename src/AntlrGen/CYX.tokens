@@ -59,10 +59,10 @@ BLANK=50
 ')'=9
 'return'=10
 'print'=11
-'println'=12
-'fun'=13
-'void'=14
-','=15
+','=12
+'println'=13
+'fun'=14
+'void'=15
 '='=16
 'var'=17
 '['=18

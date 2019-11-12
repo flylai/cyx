@@ -34,27 +34,27 @@ expr:
 	| expr op = '||' expr						# logORExpr
 	| number									# numberExpr // interpreter -> visitNumberExpr
 	| varFunExpr								# identifierExpr
-	| funCall                                   # funCallExpr // functionCall -> funCall
+	| funCall									# funCallExpr // functionCall -> funCall
 	| STRING									# stringExpr
 	| BOOL										# booleanExpr
 	| '(' expr ')'								# subExprExpr;
 
 selfAddSub: ID op = ('++' | '--');
 
-returnStmt: ('return' expr? );
+returnStmt: ('return' expr?);
 
 funCallStmt: funCall | buildInFunStmt;
 
 buildInFunStmt:
-	'print' '(' expr ')'		# printStmt
-	| 'println' '(' expr ')'	# printlnStmt;
+	'print' '(' expr? (',' expr)* ')'		# printStmt
+	| 'println' '(' expr? (',' expr)* ')'	# printlnStmt;
 
 varFunExpr: funCall | varNameExpr;
 
 funDeclStmt: funType ID '(' params? ')' block;
 funType: 'fun' | 'void' | type;
 params: param (',' param)*; // 声明时参数
-param : type? ID;
+param: type? ID;
 
 funCall: ID '(' args? ')';
 args: expr (',' expr)*; // 调用时参数
