@@ -2,7 +2,7 @@ package Util;
 
 public class Log {
     public static void d(String msg) {
-        System.out.println("[" + getCaller() + "] —> " + msg);
+        System.out.println("[" + getCaller() + "] -> " + msg);
     }
 
     public static String getCaller() {

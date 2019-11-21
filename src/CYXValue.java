@@ -22,14 +22,15 @@ public class CYXValue implements Comparable<CYXValue> {
     //=========================toType
 
     public Boolean toBoolean() {
-        if (value == null)
+        if (value == null) {
             return false;
-        else if (value instanceof Number)
+        } else if (value instanceof Number) {
             return ((Number) value).doubleValue() != 0;
-        else if (value instanceof String)
+        } else if (value instanceof String) {
             return true;
-        else if (value instanceof Boolean)
+        } else if (value instanceof Boolean) {
             return (Boolean) value;
+        }
         return false;
     }
 
@@ -90,8 +91,11 @@ public class CYXValue implements Comparable<CYXValue> {
     @Override
     public int compareTo(CYXValue cyxValue) {
         if (this.isNumber() && cyxValue.isNumber()) {
-            if (this.equals(cyxValue)) return 0;
-            else return this.toDouble().compareTo(cyxValue.toDouble());
+            if (this.equals(cyxValue)) {
+                return 0;
+            } else {
+                return this.toDouble().compareTo(cyxValue.toDouble());
+            }
         } else if (this.isString() && cyxValue.isString()) {
             return this.toStr().compareTo(cyxValue.toString());
         }
@@ -116,39 +120,47 @@ public class CYXValue implements Comparable<CYXValue> {
     }
 
     public Class<?> getType() {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         return value.getClass();
     }
 
     @Override
     public String toString() {
         StringBuilder retval;
-        if (this == NULL)
+        if (this == NULL) {
             retval = new StringBuilder("cyxNULL");
-        else if (this == VOID)
+        } else if (this == VOID) {
             retval = new StringBuilder("cyxVOID");
-        else if (this.isList()) {
+        } else if (this.isList()) {
             retval = new StringBuilder("[");
             for (CYXValue item : this.toList()) {
                 retval.append(item.toString()).append(",");
             }
             retval.append("]");
-        } else
+        } else {
             retval = new StringBuilder(String.valueOf(value));
+        }
         return retval.toString();
     }
 
     public boolean checkTrue() {
-        if (this.isBoolean())
+        if (this.isBoolean()) {
             return this.toBoolean();
-        if (this.isNull())
+        }
+        if (this.isNull()) {
             return false;
-        if (this.isNumber())
+        }
+        if (this.isNumber()) {
             return this.toDouble() != 0;
-        if (this.isString())
+        }
+        if (this.isString()) {
             return this.toString().length() > 0;
-        if (this.isList())
+        }
+        if (this.isList()) {
             return this.toList().size() > 0;
+        }
         return false;
     }
 

@@ -16,11 +16,13 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
 
     @Override
     public CYXValue visitAddSubExpr(CYXParser.AddSubExprContext ctx) {
-        if (ctx.op.getType() == CYXParser.ADD)
+        if (ctx.op.getType() == CYXParser.ADD) {
             return varAdd(ctx);
-        else if (ctx.op.getType() == CYXParser.SUB)
+        } else if (ctx.op.getType() == CYXParser.SUB) {
             return varSub(ctx);
-        else throw new CYXException("ERROR:未知的运算符:" + ctx.op.getText(), ctx);
+        } else {
+            throw new CYXException("ERROR:未知的运算符:" + ctx.op.getText(), ctx);
+        }
 
     }
 
@@ -28,12 +30,13 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitNumberExpr(CYXParser.NumberExprContext ctx) {
         CYXValue val;
         String rawVal = ctx.number().getText();
-        if (ctx.number().DECIMAL() != null)
+        if (ctx.number().DECIMAL() != null) {
             val = new CYXValue(Double.valueOf(rawVal));
-        else if (ctx.number().INT() != null)
+        } else if (ctx.number().INT() != null) {
             val = new CYXValue((Integer.valueOf(rawVal)));
-        else
+        } else {
             val = new CYXValue(null);
+        }
         return val;
     }
 
@@ -60,10 +63,12 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     @Override
     public CYXValue visitMinusExpr(CYXParser.MinusExprContext ctx) {
         CYXValue val = visit(ctx.expr());
-        if (val.isInt())
+        if (val.isInt()) {
             return new CYXValue(0 - val.toInt());
-        if (val.isDouble())
+        }
+        if (val.isDouble()) {
             return new CYXValue(0 - val.toDouble());
+        }
         throw new CYXException("ERROR:取负仅可用于数字", ctx);
     }
 
@@ -72,18 +77,22 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue ifCondition = visit(ctx.ifStmt().expr());
 
         // if
-        if (ifCondition.checkTrue())
+        if (ifCondition.checkTrue()) {
             return visit(ctx.ifStmt().block());
+        }
 
         // else if
         for (CYXParser.ElseifStmtContext elseifStmtContext : ctx.elseifStmt()) {
             CYXValue elseifCondition = visit(elseifStmtContext.expr());
-            if (elseifCondition.checkTrue())
+            if (elseifCondition.checkTrue()) {
                 return visit(elseifStmtContext.block());
+            }
         }
         // else
         if (ctx.elseStmt() != null)// else 存在?
+        {
             return visit(ctx.elseStmt().block());
+        }
         return CYXValue.VOID;
     }
 
@@ -92,20 +101,24 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         scope = new CYXScope(scope);
         CYXValue val = CYXValue.NULL; // 可能的 block 返回值
 
-        if (ctx.varDeclStmt() != null)
+        if (ctx.varDeclStmt() != null) {
             visit(ctx.varDeclStmt());
-        else
+        } else {
             visit(ctx.varAssignStmt());
+        }
         while (true) {
             if (ctx.cond != null) { // for 第二个参数真假情况
-                if (!visit(ctx.cond).checkTrue())
+                if (!visit(ctx.cond).checkTrue()) {
                     break;
+                }
             }
             val = visit(ctx.block());
-            if (val.getSourceType() == CYXValue.SourceType.RETURN)
+            if (val.getSourceType() == CYXValue.SourceType.RETURN) {
                 break;
-            if (ctx.step != null)
+            }
+            if (ctx.step != null) {
                 visit(ctx.step);
+            }
         }
 
         scope = scope.parent(); // 作用域切回去
@@ -115,8 +128,9 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     @Override
     public CYXValue visitReturnStmt(CYXParser.ReturnStmtContext ctx) {
         CYXValue retval = new CYXValue(null);
-        if (ctx.expr() != null)
+        if (ctx.expr() != null) {
             retval = visit(ctx.expr());
+        }
         retval.setSourceType(CYXValue.SourceType.RETURN);
         return retval;
     }
@@ -134,8 +148,9 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
                 retval = visit(stmtCtx.returnStmt());
                 retval.setSourceType(CYXValue.SourceType.RETURN);
                 break;
-            } else
+            } else {
                 retval = visit(stmtCtx);
+            }
         }
         scope = scope.parent(); // 执行完了，作用域切回去
         return retval;
@@ -186,19 +201,21 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         if (val.isNumber()) {
             if (val.isInt()) {
                 // 自增?
-                if (ctx.op.getType() == CYXParser.SELFADD)
+                if (ctx.op.getType() == CYXParser.SELFADD) {
                     newVal = new CYXValue(val.toInt() + 1);
-                else
+                } else {
                     newVal = new CYXValue(val.toInt() - 1);
+                }
             } else if (val.isDouble()) {
-                if (ctx.op.getType() == CYXParser.SELFADD)
+                if (ctx.op.getType() == CYXParser.SELFADD) {
                     newVal = new CYXValue(val.toDouble() + 1);
-                else
+                } else {
                     newVal = new CYXValue(val.toDouble() - 1);
+                }
             }
-            if (oldVal == null)
+            if (oldVal == null) {
                 return oldVal;
-            else {
+            } else {
                 scope.assignVar(ctx.ID().getText(), newVal);
                 return oldVal;
             }
@@ -257,8 +274,9 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitBitORExpr(CYXParser.BitORExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isInt() && right.isInt())
+        if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() | right.toInt());
+        }
         throw new CYXException("ERROR:算数或运算仅可用于两个INT间", ctx);
     }
 
@@ -273,8 +291,9 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitBitXORExpr(CYXParser.BitXORExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isInt() && right.isInt())
+        if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() ^ right.toInt());
+        }
         throw new CYXException("ERROR:算数异或运算仅可用于两个INT间", ctx);
     }
 
@@ -282,8 +301,9 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitBitANDExpr(CYXParser.BitANDExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isInt() && right.isInt())
+        if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() & right.toInt());
+        }
         throw new CYXException("ERROR:算数与运算仅可用于两个INT间", ctx);
     }
 
@@ -297,26 +317,31 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
                     for (CYXParser.SubScriptContext context : ctx.varFunExpr().varNameExpr().subScripts().subScript()) { // 多维数组？
                         if (context.expr() != null) {
                             int sub = visit(context.expr()).toInt();
-                            if (curVal.isList() && curVal.toList().size() > sub)
+                            if (curVal.isList() && curVal.toList().size() > sub) {
                                 curVal = curVal.toList().get(sub);
-                            else
+                            } else {
                                 throw new CYXException("ERROR:数组越界", ctx);
+                            }
                         } else { // id[] 空
                             throw new CYXException("ERROR:[]不能为空", ctx);
                         }
                     }
                     val = curVal;
-                } else
+                } else {
                     throw new CYXException("[]运算符仅可用于数组", ctx);
+                }
             }
-            if (val == null)
+            if (val == null) {
                 throw new CYXException("ERROR:变量 " + ctx.start.getText() + " 未声明", ctx);
+            }
             return val;
         } else if (ctx.varFunExpr().funCall() != null) {
             CYXFunctionCall fun = scope.getFunCall(ctx.varFunExpr().funCall().ID().getText());
-            if (fun != null)
+            if (fun != null) {
                 return visit(ctx.varFunExpr().funCall());
-            else throw new CYXException("ERROR:函数 " + ctx.start.getText() + " 未声明");
+            } else {
+                throw new CYXException("ERROR:函数 " + ctx.start.getText() + " 未声明");
+            }
         }
         throw new CYXException("ERROR:未知异常");
     }
@@ -326,12 +351,13 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue retval;
         List tmpList = new ArrayList<>();
         for (CYXParser.SubListContext subListContext : ctx.subList()) {
-            if (subListContext.expr() != null)
+            if (subListContext.expr() != null) {
                 tmpList.add(visit(subListContext.expr()));
-            else if (subListContext.list() != null)
+            } else if (subListContext.list() != null) {
                 tmpList.add(visit(subListContext.list()));
-            else
+            } else {
                 throw new CYXException("ERROR: 未知异常", ctx);
+            }
         }
         retval = new CYXValue(tmpList);
         return retval;
@@ -393,14 +419,16 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
                 break;
         }
         if (ctx.subList() != null) {
-            if (ctx.subList().expr() != null)
+            if (ctx.subList().expr() != null) {
                 varVal = visit(ctx.subList().expr());
-            else if (ctx.subList().list() != null) {
+            } else if (ctx.subList().list() != null) {
                 varVal = visit(ctx.subList().list());
             }
         }
         if (!varType.equals("var") && varDeclType != ((CYXValue) varVal).getType()) // 类型检查
+        {
             throw new CYXException("ERROR, 声明类型与数据类型不符", ctx);
+        }
         scope.declVar(varName, (CYXValue) varVal);
         return CYXValue.VOID;
     }
@@ -412,12 +440,13 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         if (oldVal != null) { // 取到了吗 || 是否已经声明
 
             // 取要赋的值
-            if (ctx.subList().expr() != null)
+            if (ctx.subList().expr() != null) {
                 val = visit(ctx.subList().expr());
-            else if (ctx.subList().list() != null)
+            } else if (ctx.subList().list() != null) {
                 val = visit(ctx.subList().list());
-            else
+            } else {
                 throw new CYXException("ERROR:未知异常", ctx);
+            }
 
             if (ctx.varNameExpr().subScripts() != null) { // 数组赋值？
                 val = setListIndex(ctx.varNameExpr().subScripts(), oldVal, val, 0);
@@ -480,21 +509,25 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue right = visit(ctx.expr(1));
 
         // 两个 null 相加
-        if (left == CYXValue.NULL && right == CYXValue.NULL)
+        if (left == CYXValue.NULL && right == CYXValue.NULL) {
             return CYXValue.NULL;
+        }
 
-        if (left == CYXValue.NULL)
+        if (left == CYXValue.NULL) {
             left = new CYXValue("null");
-        if (right == CYXValue.NULL)
+        }
+        if (right == CYXValue.NULL) {
             right = new CYXValue("null");
+        }
 
         // 数字相加
         if (left.isNumber() && right.isNumber()) {
             // 都是整数？
-            if (left.isInt() && right.isInt())
+            if (left.isInt() && right.isInt()) {
                 return new CYXValue(left.toInt() + right.toInt());
-            else
+            } else {
                 return new CYXValue(left.toDouble() + right.toDouble());
+            }
         }
 
         if (left.isList()) {
@@ -520,10 +553,11 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         // 都是数字
         if (left.isNumber() && right.isNumber()) {
             // 都是整数
-            if (left.isInt() && right.isInt())
+            if (left.isInt() && right.isInt()) {
                 return new CYXValue(left.toInt() - right.toInt());
-            else
+            } else {
                 return new CYXValue(left.toDouble() - right.toDouble());
+            }
         }
 
         if (left.isList()) {
@@ -542,10 +576,11 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
         // 都是数字
         if (left.isNumber() && right.isNumber()) {
             // 都是整数
-            if (left.isInt() && right.isInt())
+            if (left.isInt() && right.isInt()) {
                 return new CYXValue(left.toInt() * right.toInt());
-            else
+            } else {
                 return new CYXValue(left.toDouble() * right.toDouble());
+            }
         } else if (left.isString() && right.isInt()) {
             StringBuilder retval = new StringBuilder(left.toStr());
             for (int i = 1; i < right.toInt(); i++)
@@ -564,56 +599,62 @@ public class CYXInterpreterVisitor extends CYXBaseVisitor<CYXValue> {
     private CYXValue varDiv(CYXParser.MulDivModExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() / right.toDouble());
+        }
         throw new CYXException("ERROR:变量相乘仅限数字", ctx);
     }
 
     private CYXValue varMod(CYXParser.MulDivModExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() % right.toDouble());
+        }
         throw new CYXException("ERROR:变量取模仅限数字", ctx);
     }
 
     private CYXValue varGE(CYXParser.CmpExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() >= right.toDouble());
-        else if (left.isString() && right.isString())
+        } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) >= 0);
+        }
         throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
     }
 
     private CYXValue varLE(CYXParser.CmpExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() <= right.toDouble());
-        else if (left.isString() && right.isString())
+        } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) <= 0);
+        }
         throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
     }
 
     private CYXValue varGT(CYXParser.CmpExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() > right.toDouble());
-        else if (left.isString() && right.isString())
+        } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) > 0);
+        }
         throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
     }
 
     private CYXValue varLT(CYXParser.CmpExprContext ctx) {
         CYXValue left = visit(ctx.expr(0));
         CYXValue right = visit(ctx.expr(1));
-        if (left.isNumber() && right.isNumber())
+        if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() < right.toDouble());
-        else if (left.isString() && right.isString())
+        } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) < 0);
+        }
         throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
     }
 }

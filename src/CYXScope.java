@@ -30,34 +30,41 @@ public class CYXScope {
 
     public void assignVar(String varName, CYXValue value) {
         if (getVarVal(varName) == null || vars.containsKey(varName)) // 是否已声明
+        {
             vars.put(varName, value);
-        else
+        } else {
             assignVar(parent, varName, value);
+        }
     }
 
     public void assignVar(CYXScope scope, String varName, CYXValue value) {
-        if (scope.vars.containsKey(varName))
+        if (scope.vars.containsKey(varName)) {
             scope.assignVar(varName, value);
-        else if (scope.parent != null)
+        } else if (scope.parent != null) {
             assignVar(scope.parent, varName, value);
+        }
     }
 
     // 获取变量值
     public CYXValue getVarVal(String varName) {
         if (vars.containsKey(varName)) // 当前作用域
+        {
             return vars.get(varName);
-        else if (parent != null)
+        } else if (parent != null) {
             return parent.getVarVal(varName); // 递归往回找
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     public CYXFunctionCall getFunCall(String funName) {
-        if (funs.containsKey(funName))
+        if (funs.containsKey(funName)) {
             return funs.get(funName);
-        else if (parent != null)
+        } else if (parent != null) {
             return parent.getFunCall(funName); // 递归往回找
-        else
+        } else {
             return null;
+        }
     }
 
     // 获取父作用域
