@@ -1,14 +1,12 @@
+package cyx.Domain;
+
 import java.util.List;
 
 public class CYXValue implements Comparable<CYXValue> {
 
-    public enum SourceType {RETURN, COMMON} // 用于return语句跳出
-
     public static final CYXValue NULL = new CYXValue(null);
     public static final CYXValue VOID = new CYXValue();
-
     private Object value;
-
     private SourceType sourceType = SourceType.COMMON;
 
     private CYXValue() {
@@ -18,8 +16,6 @@ public class CYXValue implements Comparable<CYXValue> {
     public CYXValue(Object val) {
         value = val;
     }
-
-    //=========================toType
 
     public Boolean toBoolean() {
         if (value == null) {
@@ -33,6 +29,8 @@ public class CYXValue implements Comparable<CYXValue> {
         }
         return false;
     }
+
+    //=========================toType
 
     public Number toNumber() {
         return (Number) value;
@@ -54,11 +52,11 @@ public class CYXValue implements Comparable<CYXValue> {
         return String.valueOf(value);
     }
 
-    //=========================isType
-
     public boolean isBoolean() {
         return value instanceof Boolean;
     }
+
+    //=========================isType
 
     public boolean isNumber() {
         return value instanceof Number;
@@ -171,4 +169,6 @@ public class CYXValue implements Comparable<CYXValue> {
     public void setSourceType(SourceType sourceType) {
         this.sourceType = sourceType;
     }
+
+    public enum SourceType {RETURN, COMMON, BREAK, CONTINUE} // 用于语句跳出
 }

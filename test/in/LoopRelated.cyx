@@ -57,3 +57,23 @@ while i++ < 5
     }
 }
 println(cnt)
+
+for (i = 0; i < 10; i++)
+{
+    if i == 3
+    { continue }
+    if i == 8
+    { break }
+    print(i)
+}
+println()
+i = 0
+while (i++ < 10)
+{
+    if i == 3
+    { continue }
+    if i == 8
+    { break }
+    print(i)
+}
+println()

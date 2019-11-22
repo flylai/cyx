@@ -1,6 +1,6 @@
 grammar CYX;
 
-program: stmt+ EOF;
+program: stmt* EOF;
 
 block: '{' stmt* '}';
 
@@ -18,20 +18,23 @@ stmt:
 		| whileStmt // while stmt
 		| returnStmt
 		| selfAddSub
+		| CONTINUE
+		| BREAK
 	) ';'?;
 
 expr:
 	selfAddSub									# selfAddSubExpr // interpreter -> selfAddSub
-	| expr op = ('*' | '/' | '%') expr			# mulDivModExpr
-	| expr op = ('+' | '-') expr				# addSubExpr
-	| expr op = ('>=' | '<=' | '>' | '<') expr	# cmpExpr
-	| expr op = ('==' | '!=') expr				# eqExpr
-	| op = '-' expr								# minusExpr
-	| expr op = '&' expr						# bitANDExpr
-	| expr op = '^' expr						# bitXORExpr
-	| expr op = '|' expr						# bitORExpr
-	| expr op = '&&' expr						# logANDExpr
-	| expr op = '||' expr						# logORExpr
+	| expr op = ('*' | '/' | '%') expr			# binaryExpr //mulDivModExpr
+	| expr op = ('+' | '-') expr				# binaryExpr //addSubExpr
+	| expr op = ('>=' | '<=' | '>' | '<') expr	# binaryExpr //cmpExpr
+	| expr op = ('==' | '!=') expr				# binaryExpr //eqExpr
+	| expr op = '&' expr						# binaryExpr //bitANDExpr
+	| expr op = '^' expr						# binaryExpr //bitXORExpr
+	| expr op = '|' expr						# binaryExpr //bitORExpr
+	| expr op = '&&' expr						# binaryExpr //logANDExpr
+	| expr op = '||' expr						# binaryExpr //logORExpr
+	| op = '-' expr								# unaryExpr
+	| op = '!' expr								# unaryExpr
 	| number									# numberExpr // interpreter -> visitNumberExpr
 	| varFunExpr								# identifierExpr
 	| funCall									# funCallExpr // functionCall -> funCall
@@ -39,7 +42,9 @@ expr:
 	| BOOL										# booleanExpr
 	| '(' expr ')'								# subExprExpr;
 
-selfAddSub: ID op = ('++' | '--');
+selfAddSub:
+	ID op = ('++' | '--')	# postSelfCalc
+	| op = ('++' | '--') ID	# preSelfCalc;
 
 returnStmt: ('return' expr?);
 
@@ -105,6 +110,7 @@ BXOR: '^';
 BOR: '|';
 LAND: '&&';
 LOR: '||';
+LNOT: '!';
 //end
 
 IF: 'if';
@@ -112,10 +118,13 @@ ELSE: 'else';
 FOR: 'for';
 WHILE: 'while';
 BOOL: 'true' | 'false';
+BREAK: 'break';
+CONTINUE: 'continue';
+
 COMMENT: (
 		'/*' ~('\r' | '\n')* '*/' // /* COMMENT */
 		| '//' ~('\r' | '\n')* // // COMMENT
-		| '#' ~('\r' | '\n')* // # COMMENT
+		| '#' ~('\r' | '\n')* // #  COMMENT
 	) -> skip;
 
 ID: [_a-zA-Z] (LETTER | [0-9]+)*;

@@ -1,6 +1,10 @@
-import AntlrGen.CYXLexer;
-import AntlrGen.CYXParser;
-import Util.Log;
+package cyx;
+
+import cyx.Domain.CYXScope;
+import cyx.Interpreter.CYXInterpreterVisitor;
+import cyx.Parser.CYXLexer;
+import cyx.Parser.CYXParser;
+import cyx.Util.Log;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;

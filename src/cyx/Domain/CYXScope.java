@@ -1,5 +1,6 @@
+package cyx.Domain;
 
-import AntlrGen.CYXParser;
+import cyx.Parser.CYXParser;
 
 import java.util.HashMap;
 import java.util.List;

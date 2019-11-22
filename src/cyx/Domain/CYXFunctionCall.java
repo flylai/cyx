@@ -1,6 +1,8 @@
-import AntlrGen.CYXParser;
-import Util.CYXException;
-import Util.Log;
+package cyx.Domain;
+
+import cyx.Interpreter.CYXInterpreterVisitor;
+import cyx.Parser.CYXParser;
+import cyx.Util.CYXException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package Util;
+package cyx.Util;
 
 public class Log {
     public static void d(String msg) {
