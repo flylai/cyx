@@ -1,6 +1,6 @@
 package cyx.Domain;
 
-import cyx.Interpreter.CYXInterpreterVisitor;
+import cyx.Interpreter.CYXStmtVisitor;
 import cyx.Parser.CYXParser;
 import cyx.Util.CYXException;
 
@@ -26,9 +26,8 @@ public class CYXFunctionCall {
         for (int i = 0; i < args.size(); i++) { // 新作用域 参数赋值
             subScope.declVar(argsName.get(i), args.get(i));
         }
-
-        CYXInterpreterVisitor interpreter = new CYXInterpreterVisitor(subScope);
-        CYXValue retval = interpreter.visit(funBlock); // 对函数块进行求值求解
+        CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(subScope);
+        CYXValue retval = stmtVisitor.visit(funBlock); // 对函数块进行求值求解
         return retval; // 可能的函数返回值
     }
 

@@ -115,7 +115,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
                 break;
             } else {
                 retval = visit(stmtCtx);
-                if (retval.getSourceType() == CYXValue.SourceType.CONTINUE || retval.getSourceType() == CYXValue.SourceType.BREAK) { // 如果内层遇到了中断语句
+                if (retval != null && (retval.getSourceType() == CYXValue.SourceType.CONTINUE || retval.getSourceType() == CYXValue.SourceType.BREAK)) { // 如果内层遇到了中断语句
                     break;
                 }
             }
@@ -191,7 +191,16 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         List arg = new ArrayList<>();
 
         for (CYXParser.ExprContext exprContext : ctx.args().expr()) {
-            arg.add(exprVisitor.visit(exprContext));
+            CYXValue tmp = exprVisitor.visit(exprContext); // 取值
+            List<CYXValue> tmpList = new ArrayList<>(); // 新的list
+            if (tmp.isList()) { // 如果值是列表
+                for (CYXValue tmpVar : tmp.toList()) {
+                    tmpList.add(tmpVar); // 旧值加入新列表
+                }
+                arg.add(new CYXValue(tmpList)); // 声明新变量 用于functionCall
+            } else {
+                arg.add(tmp); // 不是arraylist直接声明
+            }
         }
         CYXValue funCallRetVal = scope.getFunCall(fun).invoke(scope, arg);
         return funCallRetVal;
