@@ -351,4 +351,20 @@ public interface CYXVisitor<T> extends ParseTreeVisitor<T> {
      * @return the visitor result
      */
     T visitSubList(CYXParser.SubListContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link CYXParser#breakStmt}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitBreakStmt(CYXParser.BreakStmtContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link CYXParser#continueStmt}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitContinueStmt(CYXParser.ContinueStmtContext ctx);
 }

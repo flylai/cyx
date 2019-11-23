@@ -127,3 +127,31 @@ else if k >= 6
 
 if k==6
 {}
+
+k = 3.5
+if k > 1
+    if k > 2 :
+        if k > 3
+            if k > 4
+                println("k>4")
+            else
+                println("k<=4")
+
+if k > 0 && k < 2
+    println("?")
+else if k > 2
+    if k > 3.6
+        println("k>3.6")
+    else
+        println("k<3.6")
+else println("k=2")
+
+k = 2
+if k > 0 && k < 2
+    println("?")
+else if k > 2
+    if k > 3.6
+        println("k>3.6")
+    else
+        println("k<3.6")
+else println("k=2")

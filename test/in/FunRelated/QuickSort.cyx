@@ -19,7 +19,7 @@ fun quickSort(int left, int right)
             arr[r] = temp
         }
         else
-        { break }
+            break
     }
     arr[left] = arr[l]
     arr[l] = pivot

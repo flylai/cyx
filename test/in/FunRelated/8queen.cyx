@@ -9,7 +9,7 @@ int abs(int a)
 
 fun _8queen(int t, int n)
 {
-    if t > n
+    if t > n :
     { count++ }
     else
     {
@@ -26,7 +26,7 @@ fun _8queen(int t, int n)
                 }
             }
             if (flag)
-            { _8queen(t + 1, n) }
+                _8queen(t + 1, n)
             cb[t] = 0
         }
     }

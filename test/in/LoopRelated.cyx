@@ -77,3 +77,28 @@ while (i++ < 10)
     print(i)
 }
 println()
+
+for (int o = 0; o < 10; o++)
+    print(o)
+println()
+
+for (i = 0; i < 10; i++)
+    print(i)
+println()
+
+cnt = 0
+for (int i = 0; i < 5; i++)
+    for (int j = 0; j < 5; j++)
+        for (int k = 0; k < 5; k++)
+            cnt++
+println(cnt)
+
+while cnt > 0
+    cnt--
+println(cnt)
+
+for (i = 0; i < 10; i++)
+    break
+for (i = 0; i < 10; i++)
+    continue
+println("END")

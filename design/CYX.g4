@@ -18,8 +18,8 @@ stmt:
 		| whileStmt // while stmt
 		| returnStmt
 		| selfAddSub
-		| CONTINUE
-		| BREAK
+		| continueStmt
+		| breakStmt
 	) ';'?;
 
 expr:
@@ -73,17 +73,17 @@ subScripts: subScript+; // [number][number][number]....
 subScript: '[' expr ']'; // [number]
 
 ifStmts: ifStmt elseifStmt* elseStmt?;
-ifStmt: IF expr ':'? block;
-elseifStmt: ELSE IF expr ':'? block;
-elseStmt: ELSE ':'? block;
+ifStmt: IF expr ':'? stmt;
+elseifStmt: ELSE IF expr ':'? stmt;
+elseStmt: ELSE ':'? stmt;
 
 forStmt:
-	FOR '(' varDeclStmt ';' cond = expr? ';' step = expr? ')' block
+	FOR '(' varDeclStmt ';' cond = expr? ';' step = expr? ')' stmt
 	// for (int i = 0; i < N; i++) {}
-	| FOR '(' varAssignStmt ';' cond = expr? ';' step = expr? ')' block;
+	| FOR '(' varAssignStmt ';' cond = expr? ';' step = expr? ')' stmt;
 // for (i = 0; i < N; i++) {}
 
-whileStmt: WHILE expr ':'? block;
+whileStmt: WHILE expr ':'? stmt;
 
 number: INT | DECIMAL;
 
@@ -118,8 +118,8 @@ ELSE: 'else';
 FOR: 'for';
 WHILE: 'while';
 BOOL: 'true' | 'false';
-BREAK: 'break';
-CONTINUE: 'continue';
+breakStmt: 'break';
+continueStmt: 'continue';
 
 COMMENT: (
 		'/*' .*? '*/' // /* COMMENT */

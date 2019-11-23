@@ -462,4 +462,26 @@ public class CYXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CY
     public T visitSubList(CYXParser.SubListContext ctx) {
         return visitChildren(ctx);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitBreakStmt(CYXParser.BreakStmtContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitContinueStmt(CYXParser.ContinueStmtContext ctx) {
+        return visitChildren(ctx);
+    }
 }

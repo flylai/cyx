@@ -18,26 +18,40 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
     }
 
     @Override
+    public CYXValue visitBreakStmt(CYXParser.BreakStmtContext ctx) {
+        CYXValue retval = new CYXValue(null);
+        retval.setSourceType(CYXValue.SourceType.BREAK);
+        return retval;
+    }
+
+    @Override
+    public CYXValue visitContinueStmt(CYXParser.ContinueStmtContext ctx) {
+        CYXValue retval = new CYXValue(null);
+        retval.setSourceType(CYXValue.SourceType.CONTINUE);
+        return retval;
+    }
+
+    @Override
     public CYXValue visitIfStmts(CYXParser.IfStmtsContext ctx) {
         CYXExprVisitor exprVisitor = new CYXExprVisitor(scope);
         CYXValue ifCondition = exprVisitor.visit(ctx.ifStmt().expr());
 
         // if
         if (ifCondition.checkTrue()) {
-            return visit(ctx.ifStmt().block());
+            return visit(ctx.ifStmt().stmt());
         }
 
         // else if
         for (CYXParser.ElseifStmtContext elseifStmtContext : ctx.elseifStmt()) {
             CYXValue elseifCondition = exprVisitor.visit(elseifStmtContext.expr());
             if (elseifCondition.checkTrue()) {
-                return visit(elseifStmtContext.block());
+                return visit(elseifStmtContext.stmt());
             }
         }
         // else
         if (ctx.elseStmt() != null)// else 存在?
         {
-            return visit(ctx.elseStmt().block());
+            return visit(ctx.elseStmt().stmt());
         }
         return CYXValue.VOID;
     }
@@ -60,7 +74,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
                     break;
                 }
             }
-            val = visit(ctx.block());
+            val = visit(ctx.stmt());
             if (val != null) {
                 if (val.getSourceType() == CYXValue.SourceType.RETURN) {
                     break;
@@ -109,10 +123,10 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
                 retval = visit(stmtCtx.returnStmt());
                 retval.setSourceType(CYXValue.SourceType.RETURN);
                 break;
-            } else if (stmtCtx.BREAK() != null) { // BREAK
+            } else if (stmtCtx.breakStmt() != null) { // BREAK
                 retval.setSourceType(CYXValue.SourceType.BREAK);
                 break;
-            } else if (stmtCtx.CONTINUE() != null) { // CONTINUE
+            } else if (stmtCtx.continueStmt() != null) { // CONTINUE
                 retval.setSourceType(CYXValue.SourceType.CONTINUE);
                 break;
             } else {
@@ -133,7 +147,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         CYXExprVisitor exprVisitor = new CYXExprVisitor(scope);
         CYXValue retval = CYXValue.VOID;
         while (exprVisitor.visit(ctx.expr()).checkTrue()) {
-            retval = visit(ctx.block());
+            retval = visit(ctx.stmt());
             if (retval.getSourceType() == CYXValue.SourceType.RETURN) {
                 break;
             } else if (retval.getSourceType() == CYXValue.SourceType.BREAK) {
