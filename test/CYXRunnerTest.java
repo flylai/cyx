@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,6 +18,17 @@ class CYXRunnerTest {
     private static PrintStream console = null;
     private static ByteArrayOutputStream bytes = null;
 
+    @BeforeAll
+    public static void setUp() {
+        bytes = new ByteArrayOutputStream();
+        console = System.out;
+        System.setOut(new PrintStream(bytes));
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        System.setOut(console);
+    }
 
     private String readFile(String filePath) {
         try {
@@ -32,21 +44,9 @@ class CYXRunnerTest {
         return "";
     }
 
-    @BeforeAll
-    public static void setUp() {
-        bytes = new ByteArrayOutputStream();
-        console = System.out;
-        System.setOut(new PrintStream(bytes));
-    }
-
     @BeforeEach
     public void cleanUp() {
         bytes.reset();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        System.setOut(console);
     }
 
     @Test
@@ -103,6 +103,20 @@ class CYXRunnerTest {
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
         assertEquals(expect, bytes.toString());
+    }
+
+    @Test
+    public void testFunRelated() {
+        String testDir = "FunRelated/";
+        String fileDir = inPath + testDir;
+        File inFile = new File(fileDir);
+        for (File file : Objects.requireNonNull(inFile.listFiles())) {
+            bytes.reset(); // 清空缓冲区
+            String fileName = file.getName().replace(".cyx", "");
+            String expect = readFile(outPath + testDir + fileName + ".txt");
+            CYXRunner.main(new String[]{inPath + testDir + fileName + ".cyx"});
+            assertEquals(expect, bytes.toString());
+        }
     }
 
 }

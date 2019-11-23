@@ -1,0 +1,41 @@
+list cb = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+int count = 0
+int abs(int a)
+{
+    if (a > 0)
+    { return a }
+    return -a
+}
+
+fun _8queen(int t, int n)
+{
+    if t > n
+    { count++ }
+    else
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            cb[t] = i
+            bool flag = true
+            for (int j = 1; j < t; j++)
+            {
+                if cb[t] == cb[j] || t - j == abs(cb[t] - cb[j])
+                {
+                    flag = false
+                    break
+                }
+            }
+            if (flag)
+            { _8queen(t + 1, n) }
+            cb[t] = 0
+        }
+    }
+}
+for (int i = 0; i <= 8; i++)
+{
+    count = 0
+    _8queen(1, i)
+    println(count)
+}
+
+

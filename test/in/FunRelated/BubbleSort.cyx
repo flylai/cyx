@@ -1,0 +1,38 @@
+var arrr = [10,9,8,7,6,5,4,3,2,1,0] // len = 11
+fun bubbleSort(int len, list arr)
+{
+    for (int i = 0; i < len - 1; i++)
+    {
+        for (int j = len - 2; j >= 0; j--)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                int tmp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = tmp
+            }
+        }
+    }
+    println(arr)
+}
+bubbleSort(11, arrr)
+println(arrr)
+
+var arr = [10,9,8,7,6,5,4,3,2,1,0] // 11
+fun bubbleSort2(int len)
+{
+    for (int i = 0; i < len - 1; i++)
+    {
+        for (int j = len - 2; j >= 0; j--)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                int tmp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = tmp
+            }
+        }
+    }
+}
+bubbleSort2(11)
+println(arr)

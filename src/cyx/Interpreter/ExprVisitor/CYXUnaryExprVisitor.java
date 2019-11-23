@@ -67,6 +67,7 @@ public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
                     newVal = new CYXValue(val.toDouble() - 1);
                 }
             }
+            scope.assignVar(ctx.ID().getText(), newVal);
             return newVal;
         }
         throw new CYXException("ERROR: '++', '--' 运算仅可用于数字", ctx);

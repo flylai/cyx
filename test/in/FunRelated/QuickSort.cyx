@@ -1,0 +1,61 @@
+var arr = [10,9,8,7,6,5,4,3,2,1,0] // len = 11
+fun quickSort(int left, int right)
+{
+    if left >= right
+    { return }
+    int l = left
+    int r = right
+    int pivot = arr[l]
+    while l < r
+    {
+        while arr[r] >= pivot && l < r
+        { r-- }
+        while arr[l] <= pivot && l < r
+        { l++ }
+        if l < r
+        {
+            int temp = arr[l]
+            arr[l] = arr[r]
+            arr[r] = temp
+        }
+        else
+        { break }
+    }
+    arr[left] = arr[l]
+    arr[l] = pivot
+    quickSort(left, l - 1); // 不加分号导致无法排序 原因未知
+    quickSort(l + 1, right)
+}
+quickSort(0, 10)
+println(arr)
+
+var arrr = [10,9,8,7,6,5,4,3,2,1,0] // len = 11
+fun quickSort(arr, int left, int right)
+{
+    if left >= right
+    { return }
+    int l = left
+    int r = right
+    int pivot = arr[l]
+    while l < r
+    {
+        while arr[r] >= pivot && l < r
+        { r-- }
+        while arr[l] <= pivot && l < r
+        { l++ }
+        if l < r
+        {
+            int temp = arr[l]
+            arr[l] = arr[r]
+            arr[r] = temp
+        }
+        else
+        { break }
+    }
+    arr[left] = arr[l]
+    arr[l] = pivot
+    quickSort(arr, left, l - 1);
+    quickSort(arr, l + 1, right)
+}
+quickSort(arrr, 0, 10)
+println(arrr)

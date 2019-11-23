@@ -4,7 +4,7 @@ program: stmt* EOF;
 
 block: '{' stmt* '}';
 
-type: 'int' | 'double' | 'string' | 'list';
+type: 'int' | 'double' | 'string' | 'list' | 'bool';
 
 stmt:
 	(
@@ -89,7 +89,7 @@ number: INT | DECIMAL;
 
 list:
 	'[' subList (',' subList)* ']'; // [1,2,3,4,5,6,7,8,9] || [1,2,[3,4]]
-subList: (expr | list);
+subList: (funCall | expr | list);
 
 //operators
 SELFADD: '++';
@@ -122,7 +122,7 @@ BREAK: 'break';
 CONTINUE: 'continue';
 
 COMMENT: (
-		'/*' ~('\r' | '\n')* '*/' // /* COMMENT */
+		'/*' .*? '*/' // /* COMMENT */
 		| '//' ~('\r' | '\n')* // // COMMENT
 		| '#' ~('\r' | '\n')* // #  COMMENT
 	) -> skip;

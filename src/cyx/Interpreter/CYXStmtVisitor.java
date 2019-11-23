@@ -61,13 +61,15 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
                 }
             }
             val = visit(ctx.block());
-            if (val.getSourceType() == CYXValue.SourceType.RETURN) {
-                break;
-            } else if (val.getSourceType() == CYXValue.SourceType.BREAK) {
-                val.setSourceType(CYXValue.SourceType.COMMON);
-                break;
-            } else if (val.getSourceType() == CYXValue.SourceType.CONTINUE) {
-                val.setSourceType(CYXValue.SourceType.COMMON);
+            if (val != null) {
+                if (val.getSourceType() == CYXValue.SourceType.RETURN) {
+                    break;
+                } else if (val.getSourceType() == CYXValue.SourceType.BREAK) {
+                    val.setSourceType(CYXValue.SourceType.COMMON);
+                    break;
+                } else if (val.getSourceType() == CYXValue.SourceType.CONTINUE) {
+                    val.setSourceType(CYXValue.SourceType.COMMON);
+                }
             }
             if (ctx.step != null) {
                 exprVisitor.visit(ctx.step);
@@ -100,7 +102,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         // 新变量作用域
         scope = new CYXScope(scope);
         // 返回值
-        CYXValue retval = CYXValue.VOID;
+        CYXValue retval = new CYXValue(null);
         // 执行语句
         for (CYXParser.StmtContext stmtCtx : ctx.stmt()) {
             if (stmtCtx.returnStmt() != null) { // return语句
@@ -115,7 +117,9 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
                 break;
             } else {
                 retval = visit(stmtCtx);
-                if (retval != null && (retval.getSourceType() == CYXValue.SourceType.CONTINUE || retval.getSourceType() == CYXValue.SourceType.BREAK)) { // 如果内层遇到了中断语句
+                if (retval != null && (retval.getSourceType() == CYXValue.SourceType.CONTINUE
+                        || retval.getSourceType() == CYXValue.SourceType.BREAK
+                        || retval.getSourceType() == CYXValue.SourceType.RETURN)) { // 如果内层遇到了中断语句
                     break;
                 }
             }
@@ -176,10 +180,15 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitFunDeclStmt(CYXParser.FunDeclStmtContext ctx) {
         String funName = ctx.ID().getText();
         List tmpArgs = new ArrayList<>();
-        int argsSize = ctx.params().param().size();
-        for (CYXParser.ParamContext context : ctx.params().param()) {
-            tmpArgs.add(context.ID().getText());
+
+        int argsSize = 0;
+        if (ctx.params() != null) { // 参数列表
+            argsSize = ctx.params().param().size();
+            for (CYXParser.ParamContext context : ctx.params().param()) {
+                tmpArgs.add(context.ID().getText());
+            }
         }
+
         scope.declFun(ctx.block(), funName, argsSize, tmpArgs);
         return CYXValue.NULL;
     }
@@ -190,19 +199,23 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         String fun = (ctx.ID().getText());
         List arg = new ArrayList<>();
 
-        for (CYXParser.ExprContext exprContext : ctx.args().expr()) {
-            CYXValue tmp = exprVisitor.visit(exprContext); // 取值
-            List<CYXValue> tmpList = new ArrayList<>(); // 新的list
-            if (tmp.isList()) { // 如果值是列表
-                for (CYXValue tmpVar : tmp.toList()) {
-                    tmpList.add(tmpVar); // 旧值加入新列表
+        if (ctx.args() != null) { // 参数列表
+            for (CYXParser.ExprContext exprContext : ctx.args().expr()) {
+                CYXValue tmp = exprVisitor.visit(exprContext); // 取值
+                List<CYXValue> tmpList = new ArrayList<>(); // 新的list
+                if (tmp.isList()) { // 如果值是列表
+                    for (CYXValue tmpVar : tmp.toList()) {
+                        tmpList.add(tmpVar); // 旧值加入新列表
+                    }
+                    arg.add(new CYXValue(tmpList)); // 声明新变量 用于functionCall
+                } else {
+                    arg.add(tmp); // 不是arraylist直接声明
                 }
-                arg.add(new CYXValue(tmpList)); // 声明新变量 用于functionCall
-            } else {
-                arg.add(tmp); // 不是arraylist直接声明
             }
         }
+
         CYXValue funCallRetVal = scope.getFunCall(fun).invoke(scope, arg);
+        funCallRetVal.setSourceType(CYXValue.SourceType.COMMON);
         return funCallRetVal;
     }
 
@@ -239,10 +252,13 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         }
         if (ctx.subList() != null) {
             CYXExprVisitor exprVisitor = new CYXExprVisitor(scope);
-            if (ctx.subList().expr() != null) {
+            if (ctx.subList().funCall() != null) {
+                varVal = visit(ctx.subList().funCall());
+            } else if (ctx.subList().expr() != null) {
                 varVal = exprVisitor.visit(ctx.subList().expr());
             } else if (ctx.subList().list() != null) {
                 varVal = visit(ctx.subList().list());
+            } else {
             }
         }
         if (!varType.equals("var") && varDeclType != ((CYXValue) varVal).getType()) // 类型检查
@@ -260,7 +276,9 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         if (oldVal != null) { // 取到了吗 || 是否已经声明
             CYXExprVisitor exprVisitor = new CYXExprVisitor(scope);
             // 取要赋的值
-            if (ctx.subList().expr() != null) {
+            if (ctx.subList().funCall() != null) {
+                val = visit(ctx.subList().funCall());
+            } else if (ctx.subList().expr() != null) {
                 val = exprVisitor.visit(ctx.subList().expr());
             } else if (ctx.subList().list() != null) {
                 val = visit(ctx.subList().list());

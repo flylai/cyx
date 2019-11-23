@@ -3,6 +3,7 @@ package cyx.Interpreter.ExprVisitor;
 import cyx.Domain.CYXFunctionCall;
 import cyx.Domain.CYXScope;
 import cyx.Domain.CYXValue;
+import cyx.Interpreter.CYXStmtVisitor;
 import cyx.Parser.CYXBaseVisitor;
 import cyx.Parser.CYXParser;
 import cyx.Util.CYXException;
@@ -62,7 +63,7 @@ public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
                     for (CYXParser.SubScriptContext context : ctx.varFunExpr().varNameExpr().subScripts().subScript()) { // 多维数组？
                         if (context.expr() != null) {
                             int sub = visit(context.expr()).toInt();
-                            if (curVal.isList() && curVal.toList().size() > sub) {
+                            if (curVal.isList() && curVal.toList().size() > sub && sub >= 0) {
                                 curVal = curVal.toList().get(sub);
                             } else {
                                 throw new CYXException("ERROR:数组越界", ctx);
@@ -107,5 +108,11 @@ public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
     public CYXValue visitPostSelfCalc(CYXParser.PostSelfCalcContext ctx) {
         CYXUnaryExprVisitor unaryExprVisitor = new CYXUnaryExprVisitor(scope);
         return unaryExprVisitor.visit(ctx);
+    }
+
+    @Override
+    public CYXValue visitFunCall(CYXParser.FunCallContext ctx) {
+        CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(scope);
+        return stmtVisitor.visit(ctx);
     }
 }
