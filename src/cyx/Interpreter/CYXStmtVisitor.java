@@ -6,6 +6,7 @@ import cyx.Interpreter.ExprVisitor.CYXExprVisitor;
 import cyx.Parser.CYXBaseVisitor;
 import cyx.Parser.CYXParser;
 import cyx.Util.CYXException;
+import cyx.Util.CYXRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,7 +184,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
             } else if (subListContext.list() != null) {
                 tmpList.add(visit(subListContext.list()));
             } else {
-                throw new CYXException("ERROR: 未知异常", ctx);
+                throw new CYXRuntimeException("ERROR: 未知异常", ctx);
             }
         }
         retval = new CYXValue(tmpList);
@@ -277,7 +278,11 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
         }
         if (!varType.equals("var") && varDeclType != ((CYXValue) varVal).getType()) // 类型检查
         {
-            throw new CYXException("ERROR, 声明类型与数据类型不符", ctx);
+            try {
+                throw new CYXException("WARNING: 声明类型与数据类型不符", ctx);
+            } catch (CYXException cyxException) {
+                System.out.println(cyxException);
+            }
         }
         scope.declVar(varName, (CYXValue) varVal);
         return CYXValue.VOID;
@@ -297,7 +302,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
             } else if (ctx.subList().list() != null) {
                 val = visit(ctx.subList().list());
             } else {
-                throw new CYXException("ERROR:未知异常", ctx);
+                throw new CYXRuntimeException("ERROR: 未知异常", ctx);
             }
 
             if (ctx.varNameExpr().subScripts() != null) { // 数组赋值？
@@ -306,7 +311,7 @@ public class CYXStmtVisitor extends CYXBaseVisitor<CYXValue> {
             scope.assignVar(ctx.varNameExpr().ID().getText(), val);
             return CYXValue.VOID;
         }
-        throw new CYXException("ERROR:变量 " + ctx.start.getText() + " 未声明", ctx);
+        throw new CYXRuntimeException("ERROR: 变量 " + ctx.start.getText() + " 未声明", ctx);
     }
 
     // 递归赋值

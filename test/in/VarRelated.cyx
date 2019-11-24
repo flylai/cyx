@@ -38,10 +38,19 @@ var c = "str"
 var d = 'string'
 println(z*x+c+d)
 println(z*2*c+d+x)
-
-
-
-
+t = 1
+print(++t, t++)
+println()
+t = true
+println(!t)
+t = 1
+println(-t)
+println("1234" > "123")
+println("1234" > "1233")
+double a = 3.14
+println(++a == 4.14, a++ == 4.14)
+println(--a == 4.14, a-- == 4.14)
+println((-a) == (-3.14))
 
 
 

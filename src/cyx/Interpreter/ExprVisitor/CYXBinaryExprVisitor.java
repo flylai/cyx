@@ -5,6 +5,7 @@ import cyx.Domain.CYXValue;
 import cyx.Parser.CYXBaseVisitor;
 import cyx.Parser.CYXParser;
 import cyx.Util.CYXException;
+import cyx.Util.CYXRuntimeException;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (token == CYXParser.BOR) {
             return bitORExpr(ctx);
         }
-        throw new CYXException("ERROR: 未知双目运算符", ctx);
+        throw new CYXRuntimeException("ERROR: 未知双目运算符", ctx);
     }
 
 
@@ -50,7 +51,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (ctx.op.getType() == CYXParser.SUB) {
             return varSub(ctx);
         } else {
-            throw new CYXException("ERROR:未知的运算符:" + ctx.op.getText(), ctx);
+            throw new CYXRuntimeException("ERROR: 未知的运算符:" + ctx.op.getText(), ctx);
         }
 
     }
@@ -101,7 +102,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
             case CYXParser.LT:
                 return varLT(ctx);
         }
-        throw new CYXException("ERROR: 未知比较运算符", ctx);
+        throw new CYXRuntimeException("ERROR: 未知比较运算符", ctx);
     }
 
 
@@ -111,7 +112,12 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() | right.toInt());
         }
-        throw new CYXException("ERROR:算数或运算仅可用于两个INT间", ctx);
+        try {
+            throw new CYXException("WARNING: 算数或运算仅可用于两个INT间", ctx);
+        } catch (CYXException cyxException) {
+            System.out.println(cyxException);
+        }
+        return CYXValue.NULL;
     }
 
 
@@ -128,7 +134,12 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() ^ right.toInt());
         }
-        throw new CYXException("ERROR:算数异或运算仅可用于两个INT间", ctx);
+        try {
+            throw new CYXException("WARNING: 算数异或运算仅可用于两个INT间", ctx);
+        } catch (CYXException cyxException) {
+            System.out.println(cyxException);
+        }
+        return CYXValue.NULL;
     }
 
 
@@ -138,7 +149,12 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         if (left.isInt() && right.isInt()) {
             return new CYXValue(left.toInt() & right.toInt());
         }
-        throw new CYXException("ERROR:算数与运算仅可用于两个INT间", ctx);
+        try {
+            throw new CYXException("WARNING: 算数与运算仅可用于两个INT间", ctx);
+        } catch (CYXException cyxException) {
+            System.out.println(cyxException);
+        }
+        return CYXValue.NULL;
     }
 
 
@@ -200,13 +216,13 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         }
 
         if (left.isList()) {
-            ArrayList tmpList = (ArrayList) left.toList();
+            ArrayList tmpList = new ArrayList<>((ArrayList) left.toList());
             tmpList.remove(right);
             return new CYXValue(tmpList);
         }
 
         // 其他
-        throw new CYXException("ERROR:变量相减仅限数字", ctx);
+        throw new CYXRuntimeException("ERROR: 变量相减仅限数字和数组", ctx);
     }
 
     // 变量相乘
@@ -233,7 +249,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
             return new CYXValue(retval.toString());
         }
         // 其他
-        throw new CYXException("ERROR:变量相乘仅限数字和字符串", ctx);
+        throw new CYXRuntimeException("ERROR: 变量相乘仅限数字和字符串", ctx);
     }
 
     // 变量相除
@@ -243,7 +259,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         if (left.isNumber() && right.isNumber()) {
             return new CYXValue(left.toDouble() / right.toDouble());
         }
-        throw new CYXException("ERROR:变量相乘仅限数字", ctx);
+        throw new CYXRuntimeException("ERROR: 变量相除仅限数字", ctx);
     }
 
     // 变量取模
@@ -251,9 +267,13 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         CYXValue left = exprVisitor.visit(ctx.expr(0));
         CYXValue right = exprVisitor.visit(ctx.expr(1));
         if (left.isNumber() && right.isNumber()) {
-            return new CYXValue(left.toDouble() % right.toDouble());
+            if (left.isInt() && right.isInt()) {
+                return new CYXValue(left.toInt() % right.toInt());
+            } else {
+                return new CYXValue(left.toDouble() % right.toDouble());
+            }
         }
-        throw new CYXException("ERROR:变量取模仅限数字", ctx);
+        throw new CYXRuntimeException("ERROR: 变量取模仅限数字", ctx);
     }
 
     // >=
@@ -265,7 +285,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) >= 0);
         }
-        throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
+        throw new CYXRuntimeException("ERROR: 变量比较仅限于数字和字符串", ctx);
     }
 
     // <=
@@ -277,7 +297,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) <= 0);
         }
-        throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
+        throw new CYXRuntimeException("ERROR: 变量比较仅限于数字和字符串", ctx);
     }
 
     // >
@@ -289,7 +309,7 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) > 0);
         }
-        throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
+        throw new CYXRuntimeException("ERROR: 变量比较仅限于数字和字符串", ctx);
     }
 
     // <
@@ -301,6 +321,6 @@ public class CYXBinaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (left.isString() && right.isString()) {
             return new CYXValue(left.toStr().compareTo(right.toStr()) < 0);
         }
-        throw new CYXException("ERROR:变量比较仅限于数字和字符串", ctx);
+        throw new CYXRuntimeException("ERROR: 变量比较仅限于数字和字符串", ctx);
     }
 }

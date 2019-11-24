@@ -23,7 +23,7 @@ fun quickSort(int left, int right)
     }
     arr[left] = arr[l]
     arr[l] = pivot
-    quickSort(left, l - 1); // 不加分号导致无法排序 原因未知
+    quickSort(left, l - 1)
     quickSort(l + 1, right)
 }
 quickSort(0, 10)

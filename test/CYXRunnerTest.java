@@ -50,7 +50,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testNumCalc() {
+    public void testNumCalc() throws Exception {
         String testFile = "NumCalc";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -58,7 +58,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testStringCalc() {
+    public void testStringCalc() throws Exception {
         String testFile = "StringCalc";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -66,7 +66,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testVarRelated() {
+    public void testVarRelated() throws Exception {
         String testFile = "VarRelated";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -74,7 +74,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testScopeRelated() {
+    public void testScopeRelated() throws Exception {
         String testFile = "ScopeRelated";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -82,7 +82,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testListRelated() {
+    public void testListRelated() throws Exception {
         String testFile = "ListRelated";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -90,7 +90,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testIfRelated() {
+    public void testIfRelated() throws Exception {
         String testFile = "IfRelated";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -98,7 +98,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testLoopRelated() {
+    public void testLoopRelated() throws Exception {
         String testFile = "LoopRelated";
         String expect = readFile(outPath + testFile + ".txt");
         CYXRunner.main(new String[]{inPath + testFile + ".cyx"});
@@ -106,7 +106,7 @@ class CYXRunnerTest {
     }
 
     @Test
-    public void testFunRelated() {
+    public void testFunRelated() throws Exception {
         String testDir = "FunRelated/";
         String fileDir = inPath + testDir;
         File inFile = new File(fileDir);

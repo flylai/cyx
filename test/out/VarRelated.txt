@@ -18,3 +18,13 @@ strstrstrstrstrstr1.1
 1.92
 3.14strstring
 strstrstring3.14
+22
+false
+-1
+true
+true
+true
+true
+true
+true
+true

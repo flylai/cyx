@@ -6,7 +6,7 @@ import cyx.Domain.CYXValue;
 import cyx.Interpreter.CYXStmtVisitor;
 import cyx.Parser.CYXBaseVisitor;
 import cyx.Parser.CYXParser;
-import cyx.Util.CYXException;
+import cyx.Util.CYXRuntimeException;
 
 public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
     private CYXScope scope;
@@ -66,19 +66,19 @@ public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
                             if (curVal.isList() && curVal.toList().size() > sub && sub >= 0) {
                                 curVal = curVal.toList().get(sub);
                             } else {
-                                throw new CYXException("ERROR:数组越界", ctx);
+                                throw new CYXRuntimeException("ERROR: 数组越界", ctx);
                             }
                         } else { // id[] 空
-                            throw new CYXException("ERROR:[]不能为空", ctx);
+                            throw new CYXRuntimeException("ERROR: []不能为空", ctx);
                         }
                     }
                     val = curVal;
                 } else {
-                    throw new CYXException("[]运算符仅可用于数组", ctx);
+                    throw new CYXRuntimeException("ERROR: []运算符仅可用于数组", ctx);
                 }
             }
             if (val == null) {
-                throw new CYXException("ERROR:变量 " + ctx.start.getText() + " 未声明", ctx);
+                throw new CYXRuntimeException("ERROR: 变量 " + ctx.start.getText() + " 未声明", ctx);
             }
             return val;
         } else if (ctx.varFunExpr().funCall() != null) {
@@ -86,10 +86,10 @@ public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
             if (fun != null) {
                 return visit(ctx.varFunExpr().funCall());
             } else {
-                throw new CYXException("ERROR:函数 " + ctx.start.getText() + " 未声明");
+                throw new CYXRuntimeException("ERROR: 函数 " + ctx.start.getText() + " 未声明");
             }
         }
-        throw new CYXException("ERROR:未知异常");
+        throw new CYXRuntimeException("ERROR: 未知异常");
     }
 
     @Override

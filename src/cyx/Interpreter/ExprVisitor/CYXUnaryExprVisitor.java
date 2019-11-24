@@ -5,6 +5,7 @@ import cyx.Domain.CYXValue;
 import cyx.Parser.CYXBaseVisitor;
 import cyx.Parser.CYXParser;
 import cyx.Util.CYXException;
+import cyx.Util.CYXRuntimeException;
 
 public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
 
@@ -23,7 +24,7 @@ public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         } else if (token == CYXParser.LNOT) {
             return notExpr(ctx);
         }
-        throw new CYXException("ERROR:未知单目运算符", ctx);
+        throw new CYXRuntimeException("ERROR: 未知单目运算符", ctx);
     }
 
     private CYXValue minusExpr(CYXParser.UnaryExprContext ctx) {
@@ -34,14 +35,24 @@ public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
         if (val.isDouble()) {
             return new CYXValue(0 - val.toDouble());
         }
-        throw new CYXException("ERROR:取负仅可用于数字", ctx);
+        try {
+            throw new CYXException("WARNING: 取负仅可用于数字", ctx);
+        } catch (CYXException cyxException) {
+            System.out.println(cyxException);
+        }
+        return val;
     }
 
     private CYXValue notExpr(CYXParser.UnaryExprContext ctx) {
         CYXValue val = exprVisitor.visit(ctx.expr());
         if (val.isBoolean())
             return new CYXValue(!val.toBoolean());
-        throw new CYXException("ERROR:取反仅可用于bool", ctx);
+        try {
+            throw new CYXException("WARNING: 取反仅可用于bool", ctx);
+        } catch (CYXException cyxException) {
+            System.out.println(cyxException);
+        }
+        return val;
     }
 
     // ++a
@@ -70,7 +81,7 @@ public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
             scope.assignVar(ctx.ID().getText(), newVal);
             return newVal;
         }
-        throw new CYXException("ERROR: '++', '--' 运算仅可用于数字", ctx);
+        throw new CYXRuntimeException("ERROR: '++', '--' 运算仅可用于数字", ctx);
     }
 
     // a++
@@ -103,7 +114,7 @@ public class CYXUnaryExprVisitor extends CYXBaseVisitor<CYXValue> {
                 return oldVal;
             }
         }
-        throw new CYXException("ERROR: '++', '--' 运算仅可用于数字", ctx);
+        throw new CYXRuntimeException("ERROR: '++', '--' 运算仅可用于数字", ctx);
     }
 
 }

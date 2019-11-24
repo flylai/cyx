@@ -10,4 +10,4 @@ cccc
 strstrstrstrstrstr
 ss1
 sss4.5
-[CYXRunner->main:24] —> ERROR:变量相乘仅限数字和字符串 : 14
+false
