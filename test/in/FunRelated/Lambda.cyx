@@ -1,0 +1,39 @@
+var a = [a,b,c](1,2,3)  {
+    if (a == 1)
+        println(1)
+    if (a > 2)
+        println(2)
+    else println(2.2)
+    return a+b+c
+}
+println(a)
+
+fun b(int x,int y, int z){
+    return x + y + z
+}
+
+var c = []() => b(1,2,3)
+println(c)
+
+var d = []() { return b(4,5,6) }
+println(d)
+
+
+fun q(a, b){
+    return a + b
+}
+
+fun w(b){
+    return fun() => q(1, b)
+}
+println(w(2))
+
+fun e(){
+    int i = 0
+    int i0 = fun() => i++
+    int i1 = fun() => i++
+    int i5 = [a,b](1,2) { return i+a+b }
+    print(i, i0, i5)
+}
+e()
+println()

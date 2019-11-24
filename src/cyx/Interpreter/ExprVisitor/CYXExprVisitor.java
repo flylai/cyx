@@ -115,4 +115,47 @@ public class CYXExprVisitor extends CYXBaseVisitor<CYXValue> {
         CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(scope);
         return stmtVisitor.visit(ctx);
     }
+
+    @Override
+    public CYXValue visitLambdaExpr(CYXParser.LambdaExprContext ctx) {
+        scope = new CYXScope(scope); // 新作用域
+
+        CYXValue retval = CYXValue.NULL;
+        if (ctx.lambda().params() != null && ctx.lambda().args() != null) {
+            if (ctx.lambda().params().param().size() != ctx.lambda().args().expr().size()) {
+                throw new CYXRuntimeException("ERROR: 参数长度与声明时不符", ctx);
+            }
+            for (int i = 0; i < ctx.lambda().params().param().size(); i++) { // 声明变量
+                scope.declVar(ctx.lambda().params().param(i).getText(), visit(ctx.lambda().args().expr(i)));
+            }
+        }
+
+        if (ctx.lambda().block() != null) { // [](){}
+            CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(scope);
+            retval = stmtVisitor.visit(ctx.lambda().block());
+        } else if (ctx.lambda().expr() != null) { // []() => expr
+            retval = visit(ctx.lambda().expr());
+        }
+
+
+        scope = scope.parent(); // 恢复作用域
+        return retval;
+    }
+
+    @Override
+    public CYXValue visitAnonymousFunExpr(CYXParser.AnonymousFunExprContext ctx) {
+        CYXValue retval = CYXValue.NULL;
+
+        scope = new CYXScope(scope); // 新作用域
+
+        if (ctx.anonymousFun().block() != null) {
+            CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(scope);
+            retval = stmtVisitor.visit(ctx.anonymousFun().block());
+        } else if (ctx.anonymousFun().expr() != null) {
+            retval = visit(ctx.anonymousFun().expr());
+        }
+
+        scope = scope.parent(); // 恢复作用域
+        return retval;
+    }
 }

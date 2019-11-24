@@ -96,6 +96,17 @@ public class CYXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CY
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override
+    public T visitLambdaExpr(CYXParser.LambdaExprContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
     public T visitNumberExpr(CYXParser.NumberExprContext ctx) {
         return visitChildren(ctx);
     }
@@ -130,6 +141,17 @@ public class CYXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CY
      */
     @Override
     public T visitBinaryExpr(CYXParser.BinaryExprContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitAnonymousFunExpr(CYXParser.AnonymousFunExprContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -185,6 +207,28 @@ public class CYXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CY
      */
     @Override
     public T visitReturnStmt(CYXParser.ReturnStmtContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitLambda(CYXParser.LambdaContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns the result of calling
+     * {@link #visitChildren} on {@code ctx}.</p>
+     */
+    @Override
+    public T visitAnonymousFun(CYXParser.AnonymousFunContext ctx) {
         return visitChildren(ctx);
     }
 

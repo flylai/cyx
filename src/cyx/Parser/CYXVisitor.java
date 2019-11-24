@@ -71,6 +71,15 @@ public interface CYXVisitor<T> extends ParseTreeVisitor<T> {
     T visitFunCallExpr(CYXParser.FunCallExprContext ctx);
 
     /**
+     * Visit a parse tree produced by the {@code lambdaExpr}
+     * labeled alternative in {@link CYXParser#expr}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitLambdaExpr(CYXParser.LambdaExprContext ctx);
+
+    /**
      * Visit a parse tree produced by the {@code numberExpr}
      * labeled alternative in {@link CYXParser#expr}.
      *
@@ -105,6 +114,15 @@ public interface CYXVisitor<T> extends ParseTreeVisitor<T> {
      * @return the visitor result
      */
     T visitBinaryExpr(CYXParser.BinaryExprContext ctx);
+
+    /**
+     * Visit a parse tree produced by the {@code anonymousFunExpr}
+     * labeled alternative in {@link CYXParser#expr}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitAnonymousFunExpr(CYXParser.AnonymousFunExprContext ctx);
 
     /**
      * Visit a parse tree produced by the {@code selfAddSubExpr}
@@ -149,6 +167,22 @@ public interface CYXVisitor<T> extends ParseTreeVisitor<T> {
      * @return the visitor result
      */
     T visitReturnStmt(CYXParser.ReturnStmtContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link CYXParser#lambda}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitLambda(CYXParser.LambdaContext ctx);
+
+    /**
+     * Visit a parse tree produced by {@link CYXParser#anonymousFun}.
+     *
+     * @param ctx the parse tree
+     * @return the visitor result
+     */
+    T visitAnonymousFun(CYXParser.AnonymousFunContext ctx);
 
     /**
      * Visit a parse tree produced by {@link CYXParser#funCallStmt}.

@@ -1,0 +1,27 @@
+var a = fun() => 1
+println(a)
+
+a = fun() {
+    println("123")
+}
+
+a = fun() {
+    int cnt = 0
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++)
+            cnt++
+    return cnt
+}
+println(a)
+
+int q = 1
+int w = 1
+int e = 1
+
+a = fun() {
+    q = fun() => w + 1 // 2
+    w = fun() => q + w // 3
+    e = fun() => q + w + e // 6
+    return q + w + e // 6 + 2 + 3
+}
+println(a)

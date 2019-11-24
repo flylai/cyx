@@ -35,6 +35,8 @@ expr:
 	| expr op = '||' expr						# binaryExpr //logORExpr
 	| op = '-' expr								# unaryExpr
 	| op = '!' expr								# unaryExpr
+	| lambda									# lambdaExpr
+	| anonymousFun								# anonymousFunExpr
 	| number									# numberExpr // interpreter -> visitNumberExpr
 	| varFunExpr								# identifierExpr
 	| funCall									# funCallExpr // functionCall -> funCall
@@ -47,6 +49,10 @@ selfAddSub:
 	| op = ('++' | '--') ID	# preSelfCalc;
 
 returnStmt: ('return' expr?);
+
+lambda: '[' params? ']' '(' args? ')' ( ('=>' expr) | block); // [a,b,c](1,2,3){ a+b+c }
+
+anonymousFun: 'fun' '(' ')' ( ('=>' expr) | block); // 匿名函数
 
 funCallStmt: funCall | buildInFunStmt;
 
