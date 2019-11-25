@@ -43,7 +43,7 @@ public class CYXRunner {
         if (inFile == null) {
             inputStream = System.in;
             System.out.println("CYX Interpreter -- Command Mode");
-            System.out.println("You can type the statement(s) on it and press Ctrl+D to run.");
+            System.out.println("You can type the statement(s) on it and press Ctrl+D(Linux) Ctrl+Z Enter(Windows) to run.");
             System.out.println();
         } else {
             inputStream = new FileInputStream(inFile);
