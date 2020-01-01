@@ -27,8 +27,7 @@ public class CYXFunctionCall {
             subScope.declVar(argsName.get(i), args.get(i));
         }
         CYXStmtVisitor stmtVisitor = new CYXStmtVisitor(subScope);
-        CYXValue retval = stmtVisitor.visit(funBlock); // 对函数块进行求值求解
-        return retval; // 可能的函数返回值
+        return stmtVisitor.visit(funBlock); // 可能的函数返回值
     }
 
 
