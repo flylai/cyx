@@ -126,33 +126,33 @@ print(!(!(false))) // false
 
 `if` 语句支持 `if...else`, `if...else if...else`, 在多个 `if` 和单个 `else` 中，`else` 均对应其最近的 `if`，条件控制语句有多种花样写法
 
-  ```c++
+```c++
 if condition 
-  	statement
+    statement
 else :
-  	statement
-  	
+    statement
+    
 if (condition) {
-	statements
+    statements
 } else if condition :
-  	statement
+    statement
 else : {
-  	statements
+    statements
 }
-  ```
+```
 
 对于语句来说，`:` , `(....)` 可有可无，如果有花括号，则支持多条语句，如果没有，则只会执行一条语句
 
 当然，形如
 
-  ```c++
+```c++
 if condtion
-	if condition
-  		if condition
-			statement
-  		else
-  			statement
-  ```
+    if condition
+        if condition
+            statement
+        else
+            statement
+```
 
 也是被允许的
 
@@ -162,28 +162,28 @@ if condtion
 
 `for` 循环类似与 `C` 家族语言的编写方式，但是第一条语句不能为空，并且只能为变量声明或者变量赋值语句，剩下俩个语句可随意
 
-  ```c++
+```c++
 int i = 0
 for (i = 0; i < 5; i++){
-	// do something...
+    // do something...
 }
 
 for (int i = 0; i < 5; i++){
-	// do something...
+    // do something...
 }
 
 for (i = 0; ; ) {}
 for (i = 0; ; i++) {}
 for (i = 0; i < 10; ) {}
-  ```
+```
 
 同样的，`for` 也可以不写***大括号***
 
 ```c++
 for (int j = 0; j < 5; j++)
-	for (int k = 0; k < 5; k++)
-		for (int l = 0; l < 5; l++)
-			// 125 times 
+    for (int k = 0; k < 5; k++)
+        for (int l = 0; l < 5; l++)
+            // 125 times 
 ```
 
 #### 3.2.2 while 循环
@@ -192,11 +192,11 @@ for (int j = 0; j < 5; j++)
 
 ```c++
 while condition {
-	// do something
+    // do something
 }
 
 while condition
-	statement
+    statement
 
 while condition :
 {}
@@ -224,9 +224,9 @@ CYX 有3种结构化跳转方式，作用效果与其他语言一致
 // 求阶乘
 int fac(int n) {
     if n >= 1
-    	return n * fac(n - 1）
+        return n * fac(n - 1）
     else
-    	return 1 
+       return 1 
 }
 
 for (int i = 0; i <= 10; i++)
@@ -242,8 +242,8 @@ for (int i = 0; i <= 10; i++)
 ```js
 // 对于语句块 可以这么写
 var a = fun() {
-	print("called")
-	return 1
+    print("called")
+    return 1
 }
 // 此时 a 的值为 1，并且打印了 called 
 
@@ -309,7 +309,7 @@ println(1,2,3)
 
 ```c++
 fun example() {
-	return 998
+    return 998
 }
 print(example()) // 998
 ```
@@ -320,7 +320,7 @@ print(example()) // 998
 
 ```c++
 fun q(){
-	return 2
+    return 2
 }
 var x = q()
 print(x) // 2
@@ -359,7 +359,7 @@ int i = 0
 fun a(int i) {
     fun b() { i++ }
     fun c() { 
-    	fun d() {
+        fun d() {
             i++
         }
         d()
